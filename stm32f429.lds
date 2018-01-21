@@ -12,7 +12,7 @@ SECTIONS
 	.text :
 	{
 		KEEP(*(.vector_table))
-		*(.text)
+		*(.text*)
 		*(.rodata)
 		*(.rodata.*)
 		/*. = ALIGN(4);*/

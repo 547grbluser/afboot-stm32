@@ -1,4 +1,4 @@
-CROSS_COMPILE ?= arm-none-eabi-
+CROSS_COMPILE ?= arm-uclinuxeabi-
 
 CC = $(CROSS_COMPILE)gcc
 LD = $(CROSS_COMPILE)ld
@@ -10,16 +10,16 @@ OPENOCD = openocd
 KERNEL_ADDR?=0x08008000
 DTB_ADDR?=0x08004000
 
-CFLAGS := -mthumb -mcpu=cortex-m4
+CFLAGS := -mthumb -march=armv7-m
 CFLAGS += -ffunction-sections -fdata-sections
-CFLAGS += -Os -std=gnu99 -Wall
+CFLAGS += -Os -std=gnu99 -Wall -g
 LINKERFLAGS := -nostartfiles --gc-sections
 
 obj-y += gpio.o mpu.o qspi.o start_kernel.o
 obj-f4 += $(obj-y) usart-f4.o
 obj-f7 += $(obj-y) usart-f7.o
 
-all: stm32f429i-disco stm32429i-eval stm32f469i-disco stm32746g-eval stm32h743i-eval
+all: stm32f429i-disco stm32429i-ucpc stm32429i-eval stm32f469i-disco stm32746g-eval stm32h743i-eval
 
 %.o: %.c
 	$(CC) -c $(CFLAGS) -DKERNEL_ADDR=$(KERNEL_ADDR) -DDTB_ADDR=$(DTB_ADDR) $< -o $@
@@ -28,6 +28,11 @@ stm32f429i-disco: stm32f429i-disco.o $(obj-f4)
 	$(LD) -T stm32f429.lds $(LINKERFLAGS) -o stm32f429i-disco.elf stm32f429i-disco.o $(obj-f4)
 	$(OBJCOPY) -Obinary stm32f429i-disco.elf stm32f429i-disco.bin
 	$(SIZE) stm32f429i-disco.elf
+
+stm32429i-ucpc: stm32429i-ucpc.o $(obj-f4)
+	$(LD) -T stm32f429.lds $(LINKERFLAGS) -o stm32429i-ucpc.elf stm32429i-ucpc.o $(obj-f4)
+	$(OBJCOPY) -Obinary stm32429i-ucpc.elf stm32429i-ucpc.bin
+	$(SIZE) stm32429i-ucpc.elf
 
 stm32429i-eval: stm32429i-eval.o $(obj-f4)
 	$(LD) -T stm32f429.lds $(LINKERFLAGS) -o stm32429i-eval.elf stm32429i-eval.o $(obj-f4)
