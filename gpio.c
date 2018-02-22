@@ -47,6 +47,11 @@ void gpio_set_alt(void *base, char bank, uint8_t port,
 	gpio_set(base, bank, port, otype, GPIOx_MODER_MODERy_ALTFUNC, ospeed, pupd);
 }
 
+void gpio_set_input_pullup(void *base, char bank, uint8_t port)
+{
+	gpio_set(base, bank, port, 0, GPIOx_MODER_MODERy_INPUT, 0, GPIOx_PUPDR_PULLUP);
+}
+
 void gpio_set_fmc(void *base, char bank, uint8_t port)
 {
 	gpio_set_alt(base, bank, port, 0, GPIOx_OSPEEDR_OSPEEDRy_HIGH, 0, 0xC);
